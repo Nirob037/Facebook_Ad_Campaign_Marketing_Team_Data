@@ -1,245 +1,250 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.express as px
-import plotly.graph_objects as go
-from datetime import datetime
 
-# ================= PAGE CONFIG =================
+# -------------------------------------------------
+# Page Config
+# -------------------------------------------------
 st.set_page_config(
-    page_title="Marketing Intelligence Dashboard",
-    page_icon="🚀",
+    page_title="Facebook Ads Performance Dashboard",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
-# ================= COLOR PALETTE =================
-COLORS = {
-    "primary": "#1F77B4",
-    "secondary": "#2CA02C",
-    "accent": "#FF7F0E",
-    "neutral": "#7F7F7F",
-    "teal": "#17BECF"
-}
-
-# ================= CUSTOM CSS =================
-st.markdown(
-    f"""
-    <style>
-        .main-header {{
-            font-size: 3rem;
-            font-weight: 800;
-            text-align: center;
-            background: linear-gradient(90deg, {COLORS['primary']}, {COLORS['teal']});
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }}
-        .sub-header {{
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: {COLORS['primary']};
-            margin-top: 2rem;
-            border-bottom: 2px solid {COLORS['primary']};
-            padding-bottom: 0.3rem;
-        }}
-        .chart-box {{
-            background: white;
-            padding: 1.2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            margin-bottom: 1.5rem;
-        }}
-        .footer {{
-            text-align: center;
-            color: {COLORS['neutral']};
-            margin-top: 3rem;
-            font-size: 0.85rem;
-        }}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# ================= TITLE =================
-st.markdown('<h1 class="main-header">🚀 Marketing Intelligence Dashboard</h1>', unsafe_allow_html=True)
-st.markdown(
-    '<p style="text-align:center;color:#666;font-size:1.1rem;">Data-driven insights for smarter decisions</p>',
-    unsafe_allow_html=True
-)
-st.markdown("---")
-
-# ================= DATA LOADING =================
-def load_data():
-    uploaded_file = st.file_uploader("📤 Upload your marketing CSV file", type=["csv"])
-
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.success(f"Loaded {len(df)} rows successfully")
-        return df
-
-    # Demo data
-    st.info("Using demo data. Upload a CSV to analyze real data.")
-    demo = {
-        "campaign_name": [f"Campaign {i}" for i in range(1, 11)],
-        "audience": ["Students", "Professionals"] * 5,
-        "age_group": ["18-24", "25-34", "35-44", "18-24", "25-34"] * 2,
-        "country": ["USA", "UK", "India", "Canada", "Australia"] * 2,
-        "clicks": np.random.randint(200, 1500, 10),
-        "impressions": np.random.randint(2000, 15000, 10),
-        "amount_spent_inr": np.random.randint(5000, 60000, 10),
-        "conversions": np.random.randint(20, 200, 10),
-    }
-    return pd.DataFrame(demo)
-
-# ================= NAVIGATION =================
-def navigation():
-    cols = st.columns(4)
-
-    if "page" not in st.session_state:
-        st.session_state.page = "overview"
-
-    with cols[0]:
-        if st.button("📊 Overview"):
-            st.session_state.page = "overview"
-
-    with cols[1]:
-        if st.button("🎯 Campaigns"):
-            st.session_state.page = "campaigns"
-
-    with cols[2]:
-        if st.button("👥 Audience"):
-            st.session_state.page = "audience"
-
-    with cols[3]:
-        if st.button("🌍 Geography"):
-            st.session_state.page = "geo"
-
-    st.markdown("---")
-
-# ================= KPI SECTION =================
-def show_kpis(df):
-    col1, col2, col3, col4 = st.columns(4)
-
-    total_spend = df["amount_spent_inr"].sum()
-    total_clicks = df["clicks"].sum()
-    total_impressions = df["impressions"].sum()
-    ctr = (total_clicks / total_impressions) * 100 if total_impressions > 0 else 0
-
-    col1.metric("💰 Total Spend", f"₹{total_spend:,.0f}")
-    col2.metric("🖱 Total Clicks", f"{total_clicks:,}")
-    col3.metric("👁 Impressions", f"{total_impressions:,}")
-    col4.metric("📈 CTR", f"{ctr:.2f}%")
-
-# ================= OVERVIEW PAGE =================
-def overview_page(df):
-    show_kpis(df)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown('<div class="chart-box">', unsafe_allow_html=True)
-        fig = px.bar(
-            df.groupby("campaign_name")["clicks"].sum().reset_index(),
-            x="campaign_name",
-            y="clicks",
-            title="Campaign Engagements",
-            color="clicks",
-            color_continuous_scale="Blues"
-        )
-        st.plotly_chart(fig, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    with col2:
-        st.markdown('<div class="chart-box">', unsafe_allow_html=True)
-        fig = px.pie(
-            df,
-            values="amount_spent_inr",
-            names="audience",
-            hole=0.45,
-            title="Spend by Audience"
-        )
-        st.plotly_chart(fig, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# ================= CAMPAIGN PAGE =================
-def campaign_page(df):
-    st.markdown('<div class="sub-header">Campaign Performance</div>', unsafe_allow_html=True)
-
-    campaign = st.selectbox("Select Campaign", df["campaign_name"].unique())
-    data = df[df["campaign_name"] == campaign]
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig = px.bar(
-            data,
-            x="age_group",
-            y="clicks",
-            color="clicks",
-            title="Clicks by Age Group"
-        )
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col2:
-        fig = px.scatter(
-            data,
-            x="amount_spent_inr",
-            y="clicks",
-            size="conversions",
-            color="audience",
-            title="Spend vs Clicks"
-        )
-        st.plotly_chart(fig, use_container_width=True)
-
-# ================= AUDIENCE PAGE =================
-def audience_page(df):
-    st.markdown('<div class="sub-header">Audience Insights</div>', unsafe_allow_html=True)
-
-    fig = px.sunburst(
-        df,
-        path=["audience", "age_group"],
-        values="clicks",
-        title="Audience Segmentation"
+# -------------------------------------------------
+# Column Cleaner
+# -------------------------------------------------
+def clean_columns(df):
+    df.columns = (
+        df.columns.str.strip()
+        .str.lower()
+        .str.replace(" ", "_")
+        .str.replace("(", "")
+        .str.replace(")", "")
+        .str.replace("%", "percent")
     )
-    st.plotly_chart(fig, use_container_width=True)
+    return df
 
-# ================= GEO PAGE =================
-def geo_page(df):
-    st.markdown('<div class="sub-header">Geographic Performance</div>', unsafe_allow_html=True)
-
-    fig = px.choropleth(
-        df.groupby("country")["clicks"].sum().reset_index(),
-        locations="country",
-        locationmode="country names",
-        color="clicks",
-        title="Global Engagement Heatmap",
-        color_continuous_scale="Viridis"
-    )
-    st.plotly_chart(fig, use_container_width=True)
-
-# ================= MAIN APP =================
-def main():
-    df = load_data()
-    navigation()
-
-    if st.session_state.page == "overview":
-        overview_page(df)
-    elif st.session_state.page == "campaigns":
-        campaign_page(df)
-    elif st.session_state.page == "audience":
-        audience_page(df)
-    elif st.session_state.page == "geo":
-        geo_page(df)
-
+# -------------------------------------------------
+# KPI Cards
+# -------------------------------------------------
+def kpi_card(title, value, icon):
     st.markdown(
         f"""
-        <div class="footer">
-            <p>Created by <strong>Arafat Hossain</strong></p>
-            <p>© {datetime.now().year} Marketing Intelligence Dashboard</p>
+        <div style="
+            background:#ffffff;
+            padding:18px;
+            border-radius:14px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.08);
+            text-align:center">
+            <div style="font-size:28px">{icon}</div>
+            <div style="font-size:14px;color:#6b7280">{title}</div>
+            <div style="font-size:24px;font-weight:700">{value}</div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-if __name__ == "__main__":
-    main()
+# -------------------------------------------------
+# Header
+# -------------------------------------------------
+def header():
+    st.markdown(
+        """
+        <h1 style="text-align:center;">
+        📊 Facebook Ad Campaign Performance Dashboard
+        </h1>
+        <p style="text-align:center;color:gray;">
+        Marketing analytics & performance insights
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
+
+# -------------------------------------------------
+# Sidebar Navigation
+# -------------------------------------------------
+st.sidebar.title("📌 Navigation")
+page = st.sidebar.radio(
+    "Go to",
+    ["🏠 Home", "📈 Campaign Analysis", "🌍 Geographic Insights"]
+)
+
+st.sidebar.markdown("---")
+st.sidebar.markdown(
+    """
+    **Author:** Arafat Hossain  
+    📧 ahnirob2114@gmail.com
+    """
+)
+
+# -------------------------------------------------
+# File Upload
+# -------------------------------------------------
+uploaded_file = st.sidebar.file_uploader("Upload CSV File", type=["csv"])
+
+if uploaded_file is None:
+    header()
+    st.info("Upload your Facebook Ads CSV file from the sidebar to begin.")
+    st.stop()
+
+df = pd.read_csv(uploaded_file)
+df = clean_columns(df)
+
+# -------------------------------------------------
+# Sidebar Filters (Slicers)
+# -------------------------------------------------
+st.sidebar.markdown("### 🎛 Filters")
+
+campaign_filter = st.sidebar.multiselect(
+    "Campaign",
+    options=df["campaign_name"].unique(),
+    default=df["campaign_name"].unique()
+)
+
+age_filter = st.sidebar.multiselect(
+    "Age Group",
+    options=df["age"].unique(),
+    default=df["age"].unique()
+)
+
+geo_filter = st.sidebar.multiselect(
+    "Geography",
+    options=df["geography"].unique(),
+    default=df["geography"].unique()
+)
+
+filtered_df = df[
+    (df["campaign_name"].isin(campaign_filter)) &
+    (df["age"].isin(age_filter)) &
+    (df["geography"].isin(geo_filter))
+]
+
+# -------------------------------------------------
+# HOME PAGE
+# -------------------------------------------------
+if page == "🏠 Home":
+    header()
+
+    # KPI Row
+    k1, k2, k3, k4 = st.columns(4)
+
+    with k1:
+        kpi_card("Total Spend (INR)", f"{filtered_df['amount_spent_in_inr'].sum():,.0f}", "💰")
+    with k2:
+        kpi_card("Total Reach", f"{filtered_df['reach'].sum():,.0f}", "👥")
+    with k3:
+        kpi_card("Total Clicks", f"{filtered_df['clicks'].sum():,.0f}", "🖱️")
+    with k4:
+        kpi_card(
+            "Avg CTR (%)",
+            f"{filtered_df['click-through_rate_ctr_in_percent'].mean():.2f}",
+            "📈"
+        )
+
+    st.markdown("---")
+
+    left, right = st.columns([1, 3])
+
+    # Insight Panel
+    with left:
+        st.markdown("### 🔍 Key Insights")
+        st.write("""
+        • Overview of campaign performance  
+        • Spend vs engagement efficiency  
+        • Audience responsiveness  
+        • High-level decision support  
+        """)
+
+    # Main Chart
+    with right:
+        spend_campaign = (
+            filtered_df.groupby("campaign_name", as_index=False)
+            ["amount_spent_in_inr"].sum()
+            .sort_values(by="amount_spent_in_inr", ascending=False)
+        )
+
+        fig = px.bar(
+            spend_campaign,
+            x="campaign_name",
+            y="amount_spent_in_inr",
+            title="Total Spend by Campaign",
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+# -------------------------------------------------
+# CAMPAIGN ANALYSIS PAGE
+# -------------------------------------------------
+elif page == "📈 Campaign Analysis":
+    header()
+
+    left, right = st.columns([1, 3])
+
+    with left:
+        st.markdown("### 📊 Analysis Notes")
+        st.write("""
+        • Campaign efficiency comparison  
+        • Click performance ranking  
+        • Audience behavior by age  
+        """)
+
+    with right:
+        clicks_campaign = (
+            filtered_df.groupby("campaign_name", as_index=False)
+            ["clicks"].sum()
+            .sort_values(by="clicks", ascending=False)
+        )
+
+        fig1 = px.bar(
+            clicks_campaign,
+            x="campaign_name",
+            y="clicks",
+            title="Total Clicks by Campaign (Descending)"
+        )
+        st.plotly_chart(fig1, use_container_width=True)
+
+        ctr_age = (
+            filtered_df.groupby("age", as_index=False)
+            ["click-through_rate_ctr_in_percent"].mean()
+            .sort_values(by="click-through_rate_ctr_in_percent")
+        )
+
+        fig2 = px.bar(
+            ctr_age,
+            x="age",
+            y="click-through_rate_ctr_in_percent",
+            title="Average CTR by Age Group"
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+
+# -------------------------------------------------
+# GEOGRAPHIC PAGE
+# -------------------------------------------------
+elif page == "🌍 Geographic Insights":
+    header()
+
+    left, right = st.columns([1, 3])
+
+    with left:
+        st.markdown("### 🌐 Geographic Insights")
+        st.write("""
+        • Regional engagement strength  
+        • Spend distribution by geography  
+        • Market penetration analysis  
+        """)
+
+    with right:
+        geo_data = (
+            filtered_df.groupby("geography", as_index=False)
+            ["amount_spent_in_inr"].sum()
+        )
+
+        fig = px.choropleth(
+            geo_data,
+            locations="geography",
+            locationmode="country names",
+            color="amount_spent_in_inr",
+            title="Ad Spend by Geography",
+            color_continuous_scale="Blues"
+        )
+        st.plotly_chart(fig, use_container_width=True)
