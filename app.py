@@ -2,193 +2,192 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# ------------------ PAGE CONFIG ------------------
+# ================= PAGE CONFIG =================
 st.set_page_config(
     page_title="Marketing Performance Dashboard",
     page_icon="📊",
     layout="wide"
 )
 
-# ------------------ LOAD DATA ------------------
+# ================= LOAD DATA =================
 @st.cache_data
-def load_data(file):
-    df = pd.read_csv(file)
+def load_data():
+    return pd.read_csv("Final_Marketing Team Data.csv")
 
-    pct_cols = [
-        "Click-Through Rate (CTR in %)",
-        "Unique Click-Through Rate (Unique CTR in %)"
-    ]
-    for col in pct_cols:
-        df[col] = (
-            df[col].astype(str)
-            .str.replace("%", "", regex=False)
-            .astype(float)
-        )
+df = load_data()
 
-    num_cols = [
-        "Reach","Impressions","Clicks","Unique Clicks",
-        "Amount Spent in INR","Cost Per Click (CPC)"
-    ]
-    for col in num_cols:
-        df[col] = pd.to_numeric(df[col], errors="coerce")
+# Ensure numeric columns
+numeric_cols = [
+    'Reach','Impressions','Frequency','Clicks','Unique Clicks',
+    'Unique Link Clicks (ULC)','Click-Through Rate (CTR in %)',
+    'Unique Click-Through Rate (Unique CTR in %)',
+    'Amount Spent in INR','Cost Percentage',
+    'Cost Per Click (CPC)','Cost per Result (CPR)'
+]
 
-    return df
+for col in numeric_cols:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
 
-uploaded_file = st.file_uploader("Upload Facebook Ad Campaign CSV", type="csv")
-if not uploaded_file:
-    st.stop()
+# ================= CUSTOM CSS =================
+st.markdown("""
+<style>
+.kpi-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    text-align: center;
+}
+.kpi-title {
+    font-size: 14px;
+    color: #6c757d;
+}
+.kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f77b4;
+}
+.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 20px 0 10px 0;
+}
+</style>
+""", unsafe_allow_html=True)
 
-df = load_data(uploaded_file)
-
-# ------------------ SIDEBAR ------------------
-st.sidebar.title("📍 Navigation")
-
-page = st.sidebar.radio(
-    "Go to",
-    ["Home", "Campaign Performance", "Audience Insights", "Geographic Analysis"]
+# ================= TITLE =================
+st.markdown(
+    "<h1 style='text-align:center;'>📊 Marketing Performance Dashboard</h1>",
+    unsafe_allow_html=True
 )
 
-# Filters
-st.sidebar.markdown("### Filters")
-campaign = st.sidebar.multiselect(
-    "Campaign",
-    df["Campaign Name"].unique(),
-    default=df["Campaign Name"].unique()
+# ================= KPI CALCULATIONS =================
+total_spend = df['Amount Spent in INR'].sum()
+total_clicks = df['Clicks'].sum()
+total_impressions = df['Impressions'].sum()
+total_reach = df['Reach'].sum()
+avg_ctr = df['Click-Through Rate (CTR in %)'].mean()
+avg_cpc = df['Cost Per Click (CPC)'].mean()
+
+# ================= KPI CARDS =================
+k1, k2, k3, k4, k5, k6 = st.columns(6)
+
+kpis = [
+    ("Total Spend", f"₹{total_spend:,.0f}"),
+    ("Total Clicks", f"{total_clicks:,}"),
+    ("Impressions", f"{total_impressions:,}"),
+    ("Reach", f"{total_reach:,}"),
+    ("Avg CTR", f"{avg_ctr:.2f}%"),
+    ("Avg CPC", f"₹{avg_cpc:.2f}")
+]
+
+for col, (title, value) in zip([k1,k2,k3,k4,k5,k6], kpis):
+    col.markdown(f"""
+    <div class='kpi-box'>
+        <div class='kpi-title'>{title}</div>
+        <div class='kpi-value'>{value}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ================= CAMPAIGN PERFORMANCE =================
+st.markdown("<div class='section-title'>Campaign Performance</div>", unsafe_allow_html=True)
+
+c1, c2 = st.columns(2)
+
+campaign_clicks = (
+    df.groupby("Campaign Name")["Clicks"]
+    .sum()
+    .sort_values(ascending=False)
+    .reset_index()
 )
 
-df = df[df["Campaign Name"].isin(campaign)]
+fig1 = px.bar(
+    campaign_clicks,
+    x="Clicks",
+    y="Campaign Name",
+    orientation="h",
+    title="Clicks by Campaign",
+    text="Clicks"
+)
+fig1.update_layout(yaxis={'categoryorder':'total ascending'})
+c1.plotly_chart(fig1, use_container_width=True)
 
-# ------------------ KPI CARDS ------------------
-def kpi_card(title, value):
-    st.markdown(
-        f"""
-        <div style="
-            background-color:#111;
-            padding:20px;
-            border-radius:12px;
-            text-align:center;
-            box-shadow:0 4px 10px rgba(0,0,0,0.3)">
-            <h4 style="color:#bbb;">{title}</h4>
-            <h2 style="color:white;">{value}</h2>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+campaign_spend = (
+    df.groupby("Campaign Name")["Amount Spent in INR"]
+    .sum()
+    .reset_index()
+)
 
-# ================== HOME ==================
-if page == "Home":
-    st.title("📊 Marketing Overview")
+fig2 = px.pie(
+    campaign_spend,
+    names="Campaign Name",
+    values="Amount Spent in INR",
+    hole=0.4,
+    title="Spend Distribution by Campaign"
+)
+c2.plotly_chart(fig2, use_container_width=True)
 
-    col1, col2, col3, col4 = st.columns(4)
+# ================= AUDIENCE ANALYSIS =================
+st.markdown("<div class='section-title'>Audience Insights</div>", unsafe_allow_html=True)
 
-    col1 = col1.container()
-    with col1:
-        kpi_card("Total Spend", f"₹{df['Amount Spent in INR'].sum():,.0f}")
+a1, a2 = st.columns(2)
 
-    col2 = col2.container()
-    with col2:
-        kpi_card("Impressions", f"{df['Impressions'].sum():,}")
+age_clicks = (
+    df.groupby("Age")["Clicks"]
+    .sum()
+    .sort_values(ascending=False)
+    .reset_index()
+)
 
-    col3 = col3.container()
-    with col3:
-        kpi_card("Clicks", f"{df['Clicks'].sum():,}")
+fig3 = px.bar(
+    age_clicks,
+    x="Age",
+    y="Clicks",
+    title="Clicks by Age Group",
+    text="Clicks"
+)
+a1.plotly_chart(fig3, use_container_width=True)
 
-    col4 = col4.container()
-    with col4:
-        kpi_card("Avg CTR", f"{df['Click-Through Rate (CTR in %)'].mean():.2f}%")
+audience_ctr = (
+    df.groupby("Audience")["Click-Through Rate (CTR in %)"]
+    .mean()
+    .reset_index()
+)
 
-    st.markdown("---")
+fig4 = px.bar(
+    audience_ctr,
+    x="Audience",
+    y="Click-Through Rate (CTR in %)",
+    title="Average CTR by Audience",
+    text_auto=".2f"
+)
+a2.plotly_chart(fig4, use_container_width=True)
 
-    trend = df.groupby("Date")["Clicks"].sum().reset_index()
-    fig = px.line(
-        trend,
-        x="Date",
-        y="Clicks",
-        title="Clicks Trend Over Time",
-        markers=True
-    )
-    st.plotly_chart(fig, use_container_width=True)
+# ================= GEOGRAPHY =================
+st.markdown("<div class='section-title'>Geographic Performance</div>", unsafe_allow_html=True)
 
-# ================== CAMPAIGN ==================
-elif page == "Campaign Performance":
-    st.title("🎯 Campaign Performance")
+df["Country"] = df["Geography"].str.extract(r"\((.*?)\)").fillna("Unknown")
 
-    col1, col2 = st.columns(2)
+geo = (
+    df.groupby("Country")["Clicks"]
+    .sum()
+    .reset_index()
+)
 
-    spend_campaign = df.groupby("Campaign Name")["Amount Spent in INR"].sum().reset_index()
-    fig1 = px.bar(
-        spend_campaign,
-        x="Campaign Name",
-        y="Amount Spent in INR",
-        title="Spend by Campaign",
-        text_auto=True
-    )
+fig5 = px.choropleth(
+    geo,
+    locations="Country",
+    locationmode="country names",
+    color="Clicks",
+    color_continuous_scale="Blues",
+    title="Clicks by Geography"
+)
 
-    ctr_campaign = df.groupby("Campaign Name")["Click-Through Rate (CTR in %)"].mean().reset_index()
-    fig2 = px.bar(
-        ctr_campaign,
-        x="Campaign Name",
-        y="Click-Through Rate (CTR in %)",
-        title="Average CTR by Campaign",
-        text_auto=".2f"
-    )
+st.plotly_chart(fig5, use_container_width=True)
 
-    col1.plotly_chart(fig1, use_container_width=True)
-    col2.plotly_chart(fig2, use_container_width=True)
-
-# ================== AUDIENCE ==================
-elif page == "Audience Insights":
-    st.title("👥 Audience Insights")
-
-    col1, col2 = st.columns(2)
-
-    age_clicks = df.groupby("Age")["Clicks"].sum().reset_index()
-    fig1 = px.bar(
-        age_clicks,
-        x="Age",
-        y="Clicks",
-        title="Clicks by Age Group"
-    )
-
-    gender_spend = df.groupby("Gender")["Amount Spent in INR"].sum().reset_index()
-    fig2 = px.pie(
-        gender_spend,
-        names="Gender",
-        values="Amount Spent in INR",
-        title="Spend Share by Gender",
-        hole=0.4
-    )
-
-    col1.plotly_chart(fig1, use_container_width=True)
-    col2.plotly_chart(fig2, use_container_width=True)
-
-# ================== GEOGRAPHY ==================
-elif page == "Geographic Analysis":
-    st.title("🌍 Geographic Performance")
-
-    def extract_countries(x):
-        if "(" in x:
-            return x.split("(")[1].replace(")", "").split(",")
-        return [x]
-
-    rows = []
-    for _, r in df.iterrows():
-        for c in extract_countries(r["Geography"]):
-            rows.append({
-                "Country": c.strip(),
-                "Clicks": r["Clicks"]
-            })
-
-    geo_df = pd.DataFrame(rows)
-    geo_sum = geo_df.groupby("Country", as_index=False).sum()
-
-    fig = px.choropleth(
-        geo_sum,
-        locations="Country",
-        locationmode="country names",
-        color="Clicks",
-        title="Clicks by Country",
-        color_continuous_scale="Blues"
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+# ================= FOOTER =================
+st.markdown("---")
+st.markdown(
+    "<p style='text-align:center;'>Created by <strong>Arafat Hossain</strong></p>",
+    unsafe_allow_html=True
+)
