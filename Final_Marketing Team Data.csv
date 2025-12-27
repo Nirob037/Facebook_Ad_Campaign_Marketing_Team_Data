@@ -1,0 +1,34 @@
+﻿campaign ID,Campaign Name,Audience,Age,Geography,Reach,Impressions,Frequency,Clicks,Unique Clicks,Unique Link Clicks (ULC),Click-Through Rate (CTR in %),Unique Click-Through Rate (Unique CTR in %),Amount Spent in INR,Cost Percentage,Cost Per Click (CPC),Cost per Result (CPR)
+Campaign 1,SHU_6 (Educators and Principals),Educators and Principals,25-34,"Group 1 (Australia, Canada, United Kingdom, Ghana, Nigeria, Pakistan, United States)",11387,23283,2.0447,487,406,180,2.09%,0.77%,1092.24,9.035281972,2.2428,6.068
+Campaign 1,SHU_6 (Educators and Principals),Educators and Principals,35-44,"Group 1 (Australia, Canada, United Kingdom, Ghana, Nigeria, Pakistan, United States)",8761,15683,1.7901,484,376,154,3.09%,0.98%,835.46,6.911133704,1.7262,5.4251
+Campaign 1,SHU_6 (Educators and Principals),Educators and Principals,45-54,"Group 1 (Australia, Canada, United Kingdom, Ghana, Nigeria, Pakistan, United States)",2867,6283,2.1915,198,145,65,3.15%,1.03%,319.38,2.641991097,1.613,4.9135
+Campaign 1,SHU_6 (Educators and Principals),Educators and Principals,55-64,"Group 1 (Australia, Canada, United Kingdom, Ghana, Nigeria, Pakistan, United States)",889,1890,2.126,49,40,21,2.59%,1.11%,86.25,0.713481533,1.7602,4.1071
+Campaign 2,SHU3_ (Students Apart from India and US),Students,18-24,"Group 2 (Australia, Canada, United Kingdom, Ghana, Niger, Nigeria, Nepal, Pakistan, Thailand, Taiwan)",29675,39161,1.3197,2593,1994,1095,6.62%,2.80%,1193.94,9.876569763,0.4604,1.0904
+Campaign 2,SHU3_ (Students Apart from India and US),Students,13-17,"Group 2 (Australia, Canada, United Kingdom, Ghana, Niger, Nigeria, Nepal, Pakistan, Thailand, Taiwan)",14753,25705,1.7424,969,698,435,3.77%,1.69%,299.51,2.477621497,0.3091,0.6885
+Campaign 2,SHU3_ (Students Apart from India and US),Students,25-34,"Group 2 (Australia, Canada, United Kingdom, Ghana, Niger, Nigeria, Nepal, Pakistan, Thailand, Taiwan)",2066,2447,1.1844,181,141,65,7.40%,2.66%,85.57,0.707856404,0.4728,1.3165
+Campaign 3,SHU_Students(Australia),Students,13-17,Australia,2271,2616,1.1519,61,55,28,2.33%,1.07%,475.85,3.936350002,7.8008,16.9946
+Campaign 3,SHU_Students(Australia),Students,18-24,Australia,704,734,1.0426,49,46,13,6.68%,1.77%,283.17,2.342452937,5.779,21.7823
+Campaign 3,SHU_Students(Australia),Students,25-34,Australia,212,222,1.0472,9,8,3,4.05%,1.35%,91.66,0.758234404,10.1844,30.5533
+Campaign 4,SHU_Students (Canada),Students,13-17,Canada,2330,3146,1.3502,101,84,63,3.21%,2.00%,528.08,4.368409602,5.2285,8.3822
+Campaign 4,SHU_Students (Canada),Students,18-24,Canada,759,878,1.1568,52,44,34,5.92%,3.87%,294.82,2.438824646,5.6696,8.6712
+Campaign 4,SHU_Students (Canada),Students,25-34,Canada,218,243,1.1147,18,18,15,7.41%,6.17%,101.06,0.835993551,5.6144,6.7373
+Campaign 5,SHU_Students(Ghana),Students,18-24,Ghana,5952,6943,1.1665,284,238,98,4.09%,1.41%,378.1,3.127737598,1.3313,3.8582
+Campaign 5,SHU_Students(Ghana),Students,25-34,Ghana,3717,4620,1.2429,184,160,46,3.98%,1.00%,282.22,2.3345943,1.5338,6.1352
+Campaign 5,SHU_Students(Ghana),Students,13-17,Ghana,5355,8920,1.6657,180,154,93,2.02%,1.04%,177.46,1.467993425,0.9859,1.9082
+Campaign 6,SHU_Students (India),Students,18-24,India,30110,35372,1.1748,1308,1162,934,3.70%,2.64%,894,7.395391199,0.6835,0.9572
+Campaign 6,SHU_Students (India),Students,25-34,India,1721,1874,1.0889,92,76,53,4.91%,2.83%,61.21,0.506344402,0.6653,1.1549
+Campaign 7,SHU_Students(Nepal),Students,18-24,Nepal,18900,36659,1.9396,849,688,306,2.32%,0.83%,634.64,5.249900526,0.7475,2.074
+Campaign 7,SHU_Students(Nepal),Students,13-17,Nepal,6145,19474,3.1691,325,246,129,1.67%,0.66%,211.76,1.751731589,0.6516,1.6416
+Campaign 7,SHU_Students(Nepal),Students,25-34,Nepal,4623,9082,1.9645,246,212,83,2.71%,0.91%,188.84,1.562131626,0.7676,2.2752
+Campaign 8,SHU_Students (Nigeria),Students,18-24,Nigeria,11027,13820,1.2533,1491,1132,548,10.79%,3.97%,542.67,4.489101725,0.364,0.9903
+Campaign 8,SHU_Students (Nigeria),Students,13-17,Nigeria,8516,12372,1.4528,970,696,408,7.84%,3.30%,282.21,2.334511577,0.2909,0.6917
+Campaign 8,SHU_Students (Nigeria),Students,25-34,Nigeria,2386,2782,1.166,304,230,117,10.93%,4.21%,117.9,0.975298235,0.3878,1.0077
+Campaign 9,SHU_Students(UAE),Students,25-34,UAE,2892,3347,1.1573,135,102,41,4.03%,1.23%,455.49,3.767926999,3.374,11.1095
+Campaign 9,SHU_Students(UAE),Students,18-24,UAE,2862,3234,1.13,72,60,27,2.23%,0.83%,316.14,2.615189008,4.3908,11.7089
+Campaign 9,SHU_Students(UAE),Students,13-17,UAE,1579,2079,1.3167,35,32,20,1.68%,0.96%,104.63,0.865525482,2.9894,5.2315
+Campaign 10,SHU_Students(UK),Students,13-17,UK,2557,2941,1.1502,69,60,33,2.35%,1.12%,487.52,4.032887156,7.0655,14.7733
+Campaign 10,SHU_Students(UK),Students,18-24,UK,741,785,1.0594,39,34,20,4.97%,2.55%,255.57,2.114138846,6.5531,12.7785
+Campaign 10,SHU_Students(UK),Students,25-34,UK,338,365,1.0799,13,11,4,3.56%,1.10%,113.58,0.939562117,8.7369,28.395
+Campaign 11,SHU_Students (USA),Students,13-17,USA,2159,2465,1.1417,126,111,95,5.11%,3.85%,691.28,5.718440747,5.4863,7.2766
+Campaign 11,SHU_Students (USA),Students,18-24,USA,305,332,1.0885,43,37,28,12.95%,8.43%,159.14,1.316445811,3.7009,5.6836
+Campaign 11,SHU_Students (USA),Students,25-34,USA,91,103,1.1319,9,8,3,8.74%,2.91%,47.26,0.390946519,5.2511,15.7533
