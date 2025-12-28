@@ -156,29 +156,13 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# ================= DATA LOADING FROM GITHUB =================
+# ================= LOAD DATA =================
 @st.cache_data
-def load_data_from_github():
-    """Load data directly from GitHub URL"""
-    
-    # Your GitHub raw file URL (update if needed)
-    GITHUB_RAW_URL = "https://github.com/Nirob037/Facebook_Ad_Campaign_Marketing_Team_Data/blob/main/Final_Marketing%20Team%20Data.csv"
-    
-    try:
-        # Show loading status
-        with st.spinner("📥 Loading data from GitHub..."):
-            df = pd.read_csv(GITHUB_RAW_URL)
-        
-        st.success(f"✅ **Data loaded successfully from GitHub!**")
-        st.info(f"📊 **Dataset Info:** {df.shape[0]} rows × {df.shape[1]} columns")
-        
-        # Show column verification
-        with st.expander("🔍 **Verify Column Names**", expanded=False):
-            st.write("**Your dataset columns (exact names):**")
-            cols_html = ""
-            for i, col in enumerate(df.columns, 1):
-                cols_html += f"{i}. `{col}`<br>"
-            st.markdown(cols_html, unsafe_allow_html=True)
+def load_data():
+    return pd.read_csv("Final_Marketing Team Data.csv")
+
+df = load_data()
+
         
         # Clean numeric columns
         numeric_columns = [
