@@ -162,12 +162,12 @@ def load_data_from_github():
     """Load data directly from GitHub URL"""
     
     # Your GitHub raw file URL (update if needed)
-    GITHUB_RAW_URL = "https://github.com/Nirob037/Facebook_Ad_Campaign_Marketing_Team_Data/blob/main/Final_Marketing%20Team%20Data.csv"
+    GITHUB_URL = "https://github.com/Nirob037/Facebook_Ad_Campaign_Marketing_Team_Data/blob/main/Final_Marketing%20Team%20Data.csv"
     
     try:
         # Show loading status
         with st.spinner("📥 Loading data from GitHub..."):
-            df = pd.read_csv(GITHUB_RAW_URL)
+            df = pd.read_csv(GITHUB_URL)
         
         st.success(f"✅ **Data loaded successfully from GitHub!**")
         st.info(f"📊 **Dataset Info:** {df.shape[0]} rows × {df.shape[1]} columns")
