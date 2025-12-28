@@ -16,34 +16,27 @@ st.set_page_config(
 @st.cache_data
 def load_data():
     """Load the CSV file directly"""
-    return pd.read_csv("Final_Marketing Team Data.csv")
+    try:
+        df = pd.read_csv("Final_Marketing Team Data.csv")
+        return df
+    except Exception as e:
+        st.error(f"❌ Error loading file: {str(e)}")
+        st.info("Make sure 'Final_Marketing Team Data.csv' is in the same folder as app.py")
+        return None
 
-try:
-    df = load_data()
-    st.success(f"✅ Data loaded: {len(df)} rows, {len(df.columns)} columns")
-    
-    # Display all column names for verification
-    with st.expander("🔍 Show Column Names"):
-        st.write(df.columns.tolist())
-        
-except Exception as e:
-    st.error(f"❌ Error loading file: {str(e)}")
-    st.info("""
-    **Troubleshooting:**
-    1. Ensure 'Final_Marketing Team Data.csv' is in the same folder as app.py
-    2. Check the file name matches exactly
-    3. Verify the file is in CSV format
-    """)
+df = load_data()
+
+if df is None:
     st.stop()
 
 # ================= COLOR PALETTE =================
 COLORS = {
-    'primary': '#1F77B4',      # Blue
-    'secondary': '#2CA02C',    # Green
-    'accent': '#FF7F0E',       # Orange
-    'warning': '#D62728',      # Red
-    'teal': '#17BECF',         # Teal
-    'purple': '#9467BD'        # Purple
+    'primary': '#1F77B4',
+    'secondary': '#2CA02C',
+    'accent': '#FF7F0E',
+    'warning': '#D62728',
+    'teal': '#17BECF',
+    'purple': '#9467BD'
 }
 
 # ================= TITLE =================
@@ -329,13 +322,10 @@ def show_geography():
     # Extract country from Geography column
     def extract_country(geo):
         if isinstance(geo, str):
-            # Clean the string
             geo = str(geo).strip()
-            # If it's a group, extract group name
             if 'Group' in geo:
                 return geo.split('(')[0].strip()
             else:
-                # Check for country names
                 countries = ['Australia', 'Canada', 'United Kingdom', 'Ghana', 
                            'Nigeria', 'Pakistan', 'United States', 'Nepal', 
                            'Thailand', 'Taiwan', 'India', 'UAE']
@@ -368,8 +358,8 @@ def show_geography():
             'Ghana': 'Ghana',
             'Nepal': 'Nepal',
             'UAE': 'United Arab Emirates',
-            'Group 1': 'USA',  # Approximate
-            'Group 2': 'India'  # Approximate
+            'Group 1': 'USA',
+            'Group 2': 'India'
         }
         
         geo_data['Country_Code'] = geo_data['Country'].map(country_mapping).fillna(geo_data['Country'])
