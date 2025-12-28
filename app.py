@@ -7,7 +7,7 @@ from datetime import datetime
 
 # ================= PAGE CONFIG =================
 st.set_page_config(
-    page_title="Final_Marketing Team Data Dashboard",
+    page_title="Marketing Performance Dashboard",
     page_icon="🚀",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -162,7 +162,7 @@ def load_data_from_github():
     """Load data directly from GitHub URL"""
     
     # Your GitHub raw file URL (update if needed)
-    GITHUB_RAW_URL = "https://raw.githubusercontent.com/Nirob037/Marketing-Campaign-Analytics/main/Final_Marketing%20Team%20Data.csv"
+    GITHUB_RAW_URL = "https://github.com/Nirob037/Facebook_Ad_Campaign_Marketing_Team_Data/blob/main/Final_Marketing%20Team%20Data.csv"
     
     try:
         # Show loading status
@@ -380,7 +380,7 @@ def show_kpis(df):
 # ================= HOME PAGE =================
 def home_page(df):
     """Home page with overview"""
-    st.markdown('<h1 class="main-header">📈 FINAL_MARKETING TEAM DATA INTELLIGENCE</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">📈 MARKETING TEAM DATA INTELLIGENCE</h1>', unsafe_allow_html=True)
     st.markdown('<p style="text-align: center; color: #666; font-size: 1.2rem;">Data-Driven Insights • Campaign Performance • ROI Optimization</p>', unsafe_allow_html=True)
     
     show_kpis(df)
@@ -816,7 +816,7 @@ def main():
         st.session_state.df = None
     
     # Title and data loading
-    st.markdown('<h1 class="main-header">🚀 FINAL_MARKETING DATA DASHBOARD</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🚀MARKETING DATA DASHBOARD</h1>', unsafe_allow_html=True)
     st.markdown("---")
     
     # Load data if not already loaded
@@ -861,7 +861,7 @@ def main():
             <a href='mailto:ahnirob2114@gmail.com' class='creator-email'>ahnirob2114@gmail.com</a>
         </p>
         <p style='margin-top: 1rem; font-size: 0.8rem; color: #999;'>
-            © {datetime.now().year} Final_Marketing Data Dashboard • All insights are data-driven
+            © {datetime.now().year} Marketing Data Dashboard • All insights are data-driven
         </p>
     </div>
     """, unsafe_allow_html=True)
